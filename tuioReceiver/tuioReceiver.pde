@@ -5,14 +5,11 @@ TuioProcessing tuioClient;
 
 
 //////
-int w=600;
-int h=600;
-int alfa=5;
+int w=640;
+int h=480;
+int alfa=105;
 color base=color(200, 150, 150, alfa);
-float xoff=0.0;
-float yoff=0.0;
-int ellipseW=8;
-int ellipseH=8;
+
 color init=color(180, 100, 100);
 color end=color(140, 90, 180);
 int X_AXIS=1;
@@ -31,7 +28,7 @@ PFont font;
 
 void setup()
 {
-  size(w, h);
+  size(w, h, P3D);
   noStroke();
   fill(0);
 
@@ -41,7 +38,7 @@ void setup()
 
   hint(ENABLE_NATIVE_FONTS);
   font = createFont("Arial", 18);
-  scale_factor = height/table_size;
+  scale_factor = width/table_size;
 
   // we create an instance of the TuioProcessing client
   // since we add "this" class as an argument the TuioProcessing class expects
@@ -54,11 +51,15 @@ void setup()
 // from the TuioProcessing client and then loop over both lists to draw the graphical feedback.
 void draw()
 {
+  // background(100);
+  strokeWeight(1);
+  stroke(255, 0, 0);
+  //  rect(0, 0, 640, 480);
   textFont(font, 18*scale_factor);
   float obj_size = object_size*scale_factor; 
   float cur_size = cursor_size*scale_factor; 
 
-  //  Vector tuioObjectList = tuioClient.getTuioObjects();
+  Vector tuioObjectList = tuioClient.getTuioObjects();
   //  for (int i=0;i<tuioObjectList.size();i++) {
   //    TuioObject tobj = (TuioObject)tuioObjectList.elementAt(i);
   //    stroke(0);
@@ -69,65 +70,59 @@ void draw()
   //    rect(-obj_size/2, -obj_size/2, obj_size, obj_size);
   //    popMatrix();
   //    fill(255);
-  //
-  //    pushMatrix();
-  //    noStroke();
-  //    fill(base);
-  //
-  //    xoff = xoff + .01;
-  //    yoff = yoff + random(0, .01);
-  //    float n = noise(xoff) * width;
-  //    float nn=noise(yoff) * height;
-  //
-  //    ellipse(n, nn, ellipseW, ellipseH);
-  //    popMatrix();
-  //
-  //
   //    text(""+tobj.getSymbolID(), tobj.getScreenX(width), tobj.getScreenY(height));
   //  }
+
+
+  pushMatrix();
+  translate(w, 0);
+  rotate(radians(-270));
+  translate(w*.75, 0);
+
+  scale(-.75, 1.33);
+  noFill();
+  stroke(255);
+  rect(0, 0,w,h );
+
+
+  // rect(0, 0, 480, 640);
+  //fill(255);
+  String s= "Prueba de rotación de sketch";
+  text(s, 10, 10, 100, 100);
 
   Vector tuioCursorList = tuioClient.getTuioCursors();
   for (int i=0;i<tuioCursorList.size();i++) {
     TuioCursor tcur = (TuioCursor)tuioCursorList.elementAt(i);
     Vector pointList = tcur.getPath();
 
-    pushMatrix();
-    //scale(-1, 1);
-    translate(w*.2, h);
-    rotate(radians(-90));
+    // if (pointList.size()>0) {
 
-    if (pointList.size()>0) {
-      stroke(0, 0, 255);
-      TuioPoint start_point = (TuioPoint)pointList.firstElement();
-      ;
-      for (int j=0;j<pointList.size();j++) {
-        TuioPoint end_point = (TuioPoint)pointList.elementAt(j);
-        line(start_point.getScreenX(width), start_point.getScreenY(height), end_point.getScreenX(width), end_point.getScreenY(height));
+    stroke(0, 255, 255);
+    TuioPoint start_point = (TuioPoint)pointList.firstElement();
+    ;
+    //   while (start_point.getScreenX (width) < 0.0) {
 
-        // translate(width*.5, height*.5);
-        noStroke();
-        fill(base);
+    for (int j=0;j<pointList.size();j++) {
 
-        xoff = xoff + .01;
-        yoff = yoff + random(0, .01);
-        float n = noise(xoff) * width;
-        float nn=noise(yoff) * height;
+      TuioPoint end_point = (TuioPoint)pointList.elementAt(j);
 
-        ellipse(start_point.getScreenX(width), start_point.getScreenY(height), ellipseW, ellipseH);
-        start_point = end_point;
-      }
-
-      stroke(192, 192, 192);
-      fill(192, 192, 192);
-     // ellipse( tcur.getScreenX(width), tcur.getScreenY(height), cur_size, cur_size);
-      fill(0);
-      //   text(""+ tcur.getCursorID(), tcur.getScreenX(width)-5, tcur.getScreenY(height)+5);
+      line(start_point.getScreenX(width), start_point.getScreenY(height), end_point.getScreenX(width), end_point.getScreenY(height));
+      start_point = end_point;
     }
-    popMatrix();
+    // }
+    stroke(192, 192, 192);
+    fill(192, 192, 192);     
+    ellipse( tcur.getScreenX(width), tcur.getScreenY(height), cur_size*.5, cur_size*.5);
+    fill(0);
+    text(""+ tcur.getCursorID(), tcur.getScreenX(width)-5, tcur.getScreenY(height)+5);
+    //}
   }
-}
+  popMatrix();
+} //end Draw()
+
 
 // these callback methods are called whenever a TUIO event occurs
+
 
 // called when an object is added to the scene
 void addTuioObject(TuioObject tobj) {
@@ -166,6 +161,7 @@ void removeTuioCursor(TuioCursor tcur) {
 void refresh(TuioTime bundleTime) { 
   redraw();
 }
+
 
 
 
