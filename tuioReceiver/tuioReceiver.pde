@@ -1,6 +1,7 @@
 
 import TUIO.*;
 import java.util.*;
+import processing.pdf.*;
 TuioProcessing tuioClient;
 
 
@@ -15,6 +16,7 @@ color end=color(140, 90, 180);
 int X_AXIS=1;
 int Y_AXIS=2;
 
+boolean saveOneFrame=false;
 
 
 
@@ -29,6 +31,9 @@ PFont font;
 void setup()
 {
   size(w, h, P3D);
+
+
+
   noStroke();
   fill(0);
 
@@ -45,12 +50,15 @@ void setup()
   // an implementation of the TUIO callback methods (see below)
   tuioClient  = new TuioProcessing(this);
   setGradient(0, 0, width, height, init, end, Y_AXIS );
+  
+  beginRecord(PDF, "data/skate_"+year()+month()+day()+hour()+minute()+second()+".pdf");
 }
 
 // within the draw method we retrieve a Vector (List) of TuioObject and TuioCursor (polling)
 // from the TuioProcessing client and then loop over both lists to draw the graphical feedback.
 void draw()
 {
+
   // background(100);
   strokeWeight(1);
   stroke(255, 0, 0);
@@ -83,15 +91,14 @@ void draw()
   noFill();
   stroke(255);
   rect(0, 0, w, h );
-
-
   // rect(0, 0, 480, 640);
   //fill(255);
   String s= "Prueba de rotación de sketch";
   //text(s, 10, 10, 100, 100);
 
   Vector tuioCursorList = tuioClient.getTuioCursors();
-  for (int i=0;i<tuioCursorList.size();i++) {
+  for (int i=0;i<tuioCursorList.size();i++) {    
+
     TuioCursor tcur = (TuioCursor)tuioCursorList.elementAt(i);
     Vector pointList = tcur.getPath();
 
@@ -104,7 +111,7 @@ void draw()
       for (int j=0;j<pointList.size();j++) {
 
         TuioPoint end_point = (TuioPoint)pointList.elementAt(j);
-        if (start_point.getScreenX(width) != 0.0) {
+        if (start_point.getScreenX(width) != 0.0 && end_point.getScreenX(width) !=0.0) {
 
           line(start_point.getScreenX(width), start_point.getScreenY(height), end_point.getScreenX(width), end_point.getScreenY(height));
           start_point = end_point;
@@ -118,6 +125,7 @@ void draw()
       //text(""+ tcur.getCursorID(), tcur.getScreenX(width)-5, tcur.getScreenY(height)+5);
     }
   }
+
   popMatrix();
 } //end Draw()
 
@@ -186,5 +194,12 @@ void setGradient(int x, int y, float w, float h, color c1, color c2, int axis ) 
       line(i, y, i, y+h);
     }
   }
+}
+
+void mousePressed() {
+}
+
+void mouseReleased() {
+  endRecord();
 }
 
