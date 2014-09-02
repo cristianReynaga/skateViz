@@ -82,40 +82,41 @@ void draw()
   scale(-.75, 1.33);
   noFill();
   stroke(255);
-  rect(0, 0,w,h );
+  rect(0, 0, w, h );
 
 
   // rect(0, 0, 480, 640);
   //fill(255);
   String s= "Prueba de rotación de sketch";
-  text(s, 10, 10, 100, 100);
+  //text(s, 10, 10, 100, 100);
 
   Vector tuioCursorList = tuioClient.getTuioCursors();
   for (int i=0;i<tuioCursorList.size();i++) {
     TuioCursor tcur = (TuioCursor)tuioCursorList.elementAt(i);
     Vector pointList = tcur.getPath();
 
-    // if (pointList.size()>0) {
+    if (pointList.size()>0) {
 
-    stroke(0, 255, 255);
-    TuioPoint start_point = (TuioPoint)pointList.firstElement();
-    ;
-    //   while (start_point.getScreenX (width) < 0.0) {
+      stroke(0, 255, 255);
+      TuioPoint start_point = (TuioPoint)pointList.firstElement();
+      ;
 
-    for (int j=0;j<pointList.size();j++) {
+      for (int j=0;j<pointList.size();j++) {
 
-      TuioPoint end_point = (TuioPoint)pointList.elementAt(j);
+        TuioPoint end_point = (TuioPoint)pointList.elementAt(j);
+        if (start_point.getScreenX(width) != 0.0) {
 
-      line(start_point.getScreenX(width), start_point.getScreenY(height), end_point.getScreenX(width), end_point.getScreenY(height));
-      start_point = end_point;
+          line(start_point.getScreenX(width), start_point.getScreenY(height), end_point.getScreenX(width), end_point.getScreenY(height));
+          start_point = end_point;
+          println(".. "+start_point.getScreenX(width));
+        }
+      }
+      stroke(192, 192, 192);
+      fill(192, 192, 192);     
+      // ellipse( tcur.getScreenX(width), tcur.getScreenY(height), cur_size*.5, cur_size*.5);
+      //fill(0);
+      //text(""+ tcur.getCursorID(), tcur.getScreenX(width)-5, tcur.getScreenY(height)+5);
     }
-    // }
-    stroke(192, 192, 192);
-    fill(192, 192, 192);     
-    ellipse( tcur.getScreenX(width), tcur.getScreenY(height), cur_size*.5, cur_size*.5);
-    fill(0);
-    text(""+ tcur.getCursorID(), tcur.getScreenX(width)-5, tcur.getScreenY(height)+5);
-    //}
   }
   popMatrix();
 } //end Draw()
