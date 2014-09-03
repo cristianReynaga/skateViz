@@ -89,12 +89,10 @@ void draw()
 
   scale(-.75, 1.33);
   noFill();
+  /*
   stroke(255);
   rect(0, 0, w, h );
-  // rect(0, 0, 480, 640);
-  //fill(255);
-  String s= "Prueba de rotación de sketch";
-  //text(s, 10, 10, 100, 100);
+*/
 
   Vector tuioCursorList = tuioClient.getTuioCursors();
   for (int i=0;i<tuioCursorList.size();i++) {    
@@ -104,7 +102,7 @@ void draw()
 
     if (pointList.size()>0) {
 
-      stroke(0, 255, 255);
+      stroke(0, 255, 255, 25);
       TuioPoint start_point = (TuioPoint)pointList.firstElement();
       ;
 
@@ -112,7 +110,7 @@ void draw()
 
         TuioPoint end_point = (TuioPoint)pointList.elementAt(j);
         if (start_point.getScreenX(width) != 0.0 && end_point.getScreenX(width) !=0.0) {
-
+         
           line(start_point.getScreenX(width), start_point.getScreenY(height), end_point.getScreenX(width), end_point.getScreenY(height));
           start_point = end_point;
           println(".. "+start_point.getScreenX(width));
